@@ -386,23 +386,48 @@ const ChatMessage = ({message, chatLog, setChatLog, setChatInput, experiment}) =
 
                     </div>
             </div>
+
+
+
+
+            {/* ai message: Let's see the model performance */}
+
+            <div>
+                {showMLpElement ? (
+                <div className="chat-message false">
+                    <div className="chat-message-center">
+                        <div className="avatar alirogpt">
+                            <div>AI</div>
+                        </div>
+                        <div className="message">Let's see the model performance and other information.</div>
+                        
+                        
+                    </div>
+                </div>
+                ) : (
+                <div></div>
+                )}{" "}
+            </div>
             
 
 
             
 
 
-            {/* test & Charts for ml performance*/}
-            {/* <div> */}
-                <div>
-                    {showMLpElement ? (
-                    <div className="chat-message false">
-                        <div className="chat-message-center">
-                            <div className="avatar alirogpt">
-                                <div>AI</div>
-                            </div>
-                            <div className="message">Let's see the model performance.</div>
-                            
+            {/* Charts for ml performance*/}
+            
+
+            <div>
+                {showMLpElement ? (
+                <div className="chat-message false">
+                    <div className="chat-message-center">
+                        <div className="avatar alirogpt">
+                            <div>AI</div>
+                        </div>
+
+                        
+
+                        <div className="message">
                             <Grid columns={2} stackable="stackable">
                                 <Grid.Row>
                                     <Grid.Column>
@@ -474,27 +499,109 @@ const ChatMessage = ({message, chatLog, setChatLog, setChatInput, experiment}) =
                                         />
                                     </Grid.Column>
                                 </Grid.Row>
+                                {showEDAElement ? (
+                                
+                                <Grid.Row>
+                                    <Grid.Column>
+                                        
+                                        <ImportanceScoreJSON
+                                            scoreName="Feature Importance"
+                                            scoreValueList={experiment.data.feature_importances}
+                                            featureList={experiment.data.feature_names}
+                                            chartKey="importance_score_chat"
+                                            chartColor="#55D6BE"
+                                            type="classification"/>
+                                        
+                                        
+                                        <PCAJSON
+                                            scoreName="PCA 2D"
+                                            Points={experiment.data.X_pca}
+                                            Labels={experiment.data.y_pca}
+                                            chartKey="pca_2d_chat"
+                                            chartColor="#55D6BE"
+                                            type="classification"/>
+                                        
+                                        <TSNEJSON
+                                            scoreName="TSNE 2D"
+                                            Points={experiment.data.X_tsne}
+                                            Labels={experiment.data.y_tsne}
+                                            chartKey="tsne_2d_chat"
+                                            chartColor="#55D6BE"
+                                            type="classification"/>
+                                        
+                                    </Grid.Column>
+                                    
+                                    <Grid.Column>
+                                        
+                                        <ClassRate
+                                            scoreName="Class Rate"
+                                            scoreValueList={class_percentage}
+                                            chartKey="class_rate_chat"
+                                            chartColor="#55D6BE"
+                                            type="classification"
+                                        />
+                                        
+                                        
+                                            <ShapSummaryCurve
+                                            fileDict={shapSummaryCurveDict}
+                                            shap_explainer={shap_explainer}
+                                            shap_num_samples={shap_num_samples} />
+
+
+                                        
+
+                                    </Grid.Column>
+                                    
+                                </Grid.Row>
+                                ) : (
+                                <div></div>
+                                )}{" "}
                             </Grid>
                         </div>
+                        
+                        
+                        
                     </div>
-                    ) : (
-                    <div></div>
-                    )}{" "}
                 </div>
-            {/* </div> */}
+                ) : (
+                <div></div>
+                )}{" "}
+            </div>
+
+
+            {/* ai message: Let's see the EDA */}
+            <div>
+                {showEDAElement ? (
+                <div className="chat-message false">
+                    <div className="chat-message-center">
+                        <div className="avatar alirogpt">
+                            <div>AI</div>
+                        </div>
+                        <div className="message">Let's see EDA.</div>
+                        
+                        
+                    </div>
+                </div>
+                ) : (
+                <div></div>
+                )}{" "}
+            </div>
+
 
 
             {/* test & Charts for eda*/}
-            {/* <div> */}
-                <div>
-                    {showEDAElement ? (
-                    <div className="chat-message false">
-                        <div className="chat-message-center">
-                            <div className="avatar alirogpt">
-                                <div>AI</div>
-                            </div>
-                            <div className="message">Let's see EDA.</div>
-                            
+            {/* <div>
+                {showEDAElement ? (
+
+
+
+                <div className="chat-message false">
+                    <div className="chat-message-center">
+                        <div className="avatar alirogpt">
+                            <div>AI</div>
+                        </div>
+
+                        <div className="message">
                             <Grid columns={2} stackable="stackable">
                                 <Grid.Row>
                                     <Grid.Column>
@@ -517,6 +624,7 @@ const ChatMessage = ({message, chatLog, setChatLog, setChatInput, experiment}) =
                                             type="classification"/>
                                         
                                     </Grid.Column>
+                                    
                                     <Grid.Column>
                                         
                                         <ClassRate
@@ -528,7 +636,7 @@ const ChatMessage = ({message, chatLog, setChatLog, setChatInput, experiment}) =
                                         />
                                         
                                         
-                                         <ShapSummaryCurve
+                                            <ShapSummaryCurve
                                             fileDict={shapSummaryCurveDict}
                                             shap_explainer={shap_explainer}
                                             shap_num_samples={shap_num_samples} />
@@ -547,14 +655,25 @@ const ChatMessage = ({message, chatLog, setChatLog, setChatInput, experiment}) =
                                 </Grid.Row>
                             </Grid>
                         </div>
+                        
+                        
+                        
                     </div>
-                    ) : (
-                    <div></div>
-                    )}{" "}
                 </div>
-            {/* </div> */}
 
-            
+                
+
+                
+
+                ) : (
+                <div></div>
+                )}{" "}
+            </div> */}
+
+
+    
+
+
         </>
     )
 }
