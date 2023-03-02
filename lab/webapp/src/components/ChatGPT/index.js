@@ -5,6 +5,7 @@ import React from 'react';
 import SideMenu from "./SideMenu";
 import ChatBox from "./ChatBox";
 
+
 function readdatafromlocalstorage() {
     let data = Object.keys(localStorage);
     console.log(data);
@@ -35,8 +36,11 @@ function readdatafromlocalstorage() {
 
 
 
-export default function ChatGPT() {
+export default function ChatGPT({experiment}) {
     // readdatafromlocalstorage();
+
+
+    // console.log("experiment data in ChatGPT", experiment.data);
 
     useEffect(() => {
         getEngines();
@@ -51,9 +55,11 @@ export default function ChatGPT() {
     const [chatLog, setChatLog] = useState([
         {
             user: "gpt",
-            message: "Upload your data (.csv or .xslx)"
+            message: "Hey! Upload your data (.csv or .xslx)"
         }
     ]);
+
+
 
     // clear chats
     function clearChat() {
@@ -128,7 +134,7 @@ export default function ChatGPT() {
 
     return (
         <div className="ChatGPT">
-            <SideMenu
+            {/* <SideMenu
                 currentModel={currentModel}
                 setCurrentModel={setCurrentModel}
                 models={models}
@@ -140,13 +146,15 @@ export default function ChatGPT() {
                 setChatLog = {setChatLog}
                 setChatInput={setChatInput}
                 handleSubmit={handleSubmit}
-                />
+                /> */}
             <ChatBox
                 chatInput={chatInput}
                 chatLog={chatLog}
                 setChatLog={setChatLog}
                 setChatInput={setChatInput}
-                handleSubmit={handleSubmit}/>
+                handleSubmit={handleSubmit}
+                experiment={experiment}
+                />
         </div>
     );
 }

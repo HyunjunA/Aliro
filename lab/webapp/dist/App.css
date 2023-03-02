@@ -849,6 +849,7 @@ a#addNewDatasetBtnCross i {
     padding-left: 24px;
     padding-right: 24px;
   }
+
   .avatar {
     background: white;
     border-radius: 50%;
@@ -1347,4 +1348,26 @@ body {
   
   [hidden] {
 	display: none;
+  }
+
+
+
+  .chat-button {
+    margin:3px;
+    padding: 12px;
+    border: 1px solid white;
+    border-radius: 5px;
+    text-align: left;
+    transition: ease 0.25s all;
+    cursor: pointer;
+  }
+  .chat-button-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+
+  .c3 path, .c3 line {
+    fill: none;
   }

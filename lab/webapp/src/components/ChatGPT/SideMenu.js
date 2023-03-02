@@ -52,6 +52,8 @@ const SideMenu = ({
         onClick={clearChat}
         style={{
             display: "none"
+            // display: "visible"
+
         }}>
         <span>+</span>
         New Chat
@@ -60,6 +62,7 @@ const SideMenu = ({
     {/* make below div unvisible */}
     <div className="models" style={{
             display: "none"
+            // display: "visible"
         }}>
         <label className="side-label">Model</label>
         <select

@@ -41,7 +41,10 @@ import { formatDataset } from 'utils/formatter';
 import { hashHistory } from 'react-router';
 
 class Builder extends Component {
+ 
   constructor(props) {
+    // console.log("Builder props: ", props);
+    // console.log("this.state", this.state)
     super(props);
     this.state = { dataset: null };
     this.handleSubmitExperiment = this.handleSubmitExperiment.bind(this);
@@ -51,6 +54,9 @@ class Builder extends Component {
   componentDidMount() {
     const { defaultAlgorithms, availableAlgorithms, setCurrentAlgorithm } = this.props;
     setCurrentAlgorithm(availableAlgorithms[0]);
+
+    // console.log("this.props", this.props)
+    // console.log("availableAlgorithms[0]",availableAlgorithms[0])
     
     if(!this.props.dataset) {
       fetch(`/api/datasets/${this.props.location.query.dataset}`)
@@ -106,6 +112,7 @@ class Builder extends Component {
     } = this.props;
 
 
+
     function openTrueOrFalse_submit_experiment_popup()
   {
     if (localStorage.getItem("submit-experiment-popup") == "true"){
@@ -153,7 +160,7 @@ class Builder extends Component {
                 content="Launch Experiment"
                 icon={isSubmitting ? <Icon loading name="spinner" /> : null}
                 disabled={isSubmitting}
-                // onClick={this.handleSubmitExperiment}
+                
                 onClick={() => {
                   localStorage.setItem("algorithm-popup", "true");
                   // param-popup
@@ -216,7 +223,8 @@ const mapStateToProps = (state, props) => (
   currentParams: state.builder.currentParams,
   isSubmitting: state.builder.isSubmitting,
   error: state.builder.error
-});
+}
+);
 
 export { Builder };
 export default connect(mapStateToProps, actions)(Builder);

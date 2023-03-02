@@ -2484,7 +2484,7 @@ function FileUploadMultiple(
     }
 
     return (
-        <div className="side-menu-button">
+        <div className="side-menu-button" display = "none">
 
             <input
                 id='fileUpload'
