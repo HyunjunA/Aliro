@@ -26,6 +26,8 @@ import Score from '../ResultsV2/components/Score';
 
 
 
+
+
 // Primary Chat Window
 const ChatBox = ({chatLog, setChatLog, setChatInput, handleSubmit, chatInput, experiment}) => <section className="chatbox">
     <div className="chat-log">
@@ -400,6 +402,7 @@ const ChatMessage = ({message, chatLog, setChatLog, setChatInput, experiment}) =
                             <div>AI</div>
                         </div>
                         <div className="message">Let's see the model performance and other information.</div>
+
                         
                         
                     </div>

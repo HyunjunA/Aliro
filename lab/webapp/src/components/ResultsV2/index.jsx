@@ -59,7 +59,6 @@ import ChatGPT from '../ChatGPT';
 
 class Results extends Component {
   constructor(props) {
-    console.log("Results props", props)
     super(props);
     this.getGaugeArray = this.getGaugeArray.bind(this);
   }
@@ -221,7 +220,7 @@ class Results extends Component {
           localStorage.setItem('shapSummaryCurveDict',JSON.stringify(shapSummaryCurveDict));
           localStorage.setItem('shap_explainer',shap_explainer);
           localStorage.setItem('shap_num_samples',shap_num_samples);
-          
+
 
 
         }

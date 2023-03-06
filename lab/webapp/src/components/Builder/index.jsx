@@ -40,10 +40,11 @@ import { Grid, Button, Icon, Popup, Loader } from 'semantic-ui-react';
 import { formatDataset } from 'utils/formatter';
 import { hashHistory } from 'react-router';
 
+
 class Builder extends Component {
  
   constructor(props) {
-    // console.log("Builder props: ", props);
+    // console.log("props: ", props);
     // console.log("this.state", this.state)
     super(props);
     this.state = { dataset: null };
@@ -214,9 +215,15 @@ class Builder extends Component {
 
 const mapStateToProps = (state, props) => (
 {
+  
+
   dataset: state.datasets.byId[props.location.query.dataset],
   defaultAlgorithms: state.preferences.data.algorithms,
   availableAlgorithms: state.preferences.data.algorithms.filter(function(algo) {
+
+    console.log('state in mapstatetoprops', state)
+    console.log('props.location.query.dataset', props.location.query.dataset)
+
       return algo.category==state.datasets.byId[props.location.query.dataset].files[0].prediction_type
    }),
   currentAlgorithm: state.builder.currentAlgorithm,
@@ -224,6 +231,7 @@ const mapStateToProps = (state, props) => (
   isSubmitting: state.builder.isSubmitting,
   error: state.builder.error
 }
+
 );
 
 export { Builder };
