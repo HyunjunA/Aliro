@@ -175,8 +175,8 @@ def get_column_names_from_ColumnTransformer(column_transformer, feature_names):
             new_feature_names += feature_columns
     return new_feature_names
 
-# decision rule for cross validation 2, 3, 4, 5, 6, 7, 8, 9, 10
-def decision_rule_cv_based_on_classes(each_class):
+# decision rule for choosing number of folds based on the class distribution in the given dataset
+def decision_rule_fold_cv_based_on_classes(each_class):
     """
     Adjusts the number of cross-validation folds based on the class distribution.
     
@@ -188,23 +188,19 @@ def decision_rule_cv_based_on_classes(each_class):
     Returns
     -------
     cv : int
-        Adjusted number of cross-validation folds.
+        The suitable number of cross-validation folds ensuring that each fold can include instances of each class.
     """
-    # Find the class with the minimum number of samples based on the class sample counts
-    min_samples = min(each_class.values())
+    # Find the minimum class count to ensure every fold can contain at least one instance of every class.
+    min_class_count = min(each_class.values())
     
-    # Calculate the number of classes
-    n_classes = len(each_class)
+    # The maximum number of folds is determined by the smallest class to ensure representation in each fold.
+    # However, we cannot have more folds than the minimum class count.
+    n_folds = min(10, min_class_count)  # Starting with a default max of 10 folds
     
-    # Determine the appropriate number of cv folds based on the class with the minimum samples
-    if n_classes == 2:
-        # For binary classification, ensure at least one sample of each class is present in the folds, to the extent possible
-        n_split = min(max(2, min_samples), 10)
-    else:
-        # For multi-class, use more folds if possible to balance between classes
-        n_split = min(max(3, min_samples), 10)
+    # Ensure at least 2 folds for meaningful cross-validation.
+    n_folds = max(n_folds, 2)
     
-    return n_split
+    return n_folds
 
 def generate_results(model, input_data,
                      tmpdir, _id, target_name='class',
@@ -279,10 +275,13 @@ def generate_results(model, input_data,
     
     # calculate number of each class
     each_class = input_data[target_name].value_counts()
+    # make each_class to dictionary
+    each_class = each_class.to_dict()
     print("each_class", each_class)
     print("num_classes", num_classes)
     # Temporary fix to handle NaN values
-    # n_splits = decision_rule_cv_based_on_classes(each_class)
+    # n_splits = decision_rule_fold_cv_based_on_classes(each_class)
+    # print("n_splits", n_splits)
     # cv = StratifiedKFold(n_splits=n_splits)
     features = input_data.drop(target_name, axis=1).values
     target = input_data[target_name].values
@@ -432,15 +431,18 @@ def generate_results(model, input_data,
         # computing cross-validated metrics
             
         # Temporary fix to handle NaN values
-        stratified_cv = StratifiedKFold(n_splits=8)
+        # stratified_cv = StratifiedKFold(n_splits=8)
 
-
+        # Non temporary fix
+        n_splits = decision_rule_fold_cv_based_on_classes(each_class)
+        print("n_splits", n_splits)
+        cv = StratifiedKFold(n_splits=n_splits)
         cv_scores = cross_validate(
             estimator=model,
             X=features,
             y=target,
             scoring=scoring,
-            cv = stratified_cv,
+            cv = cv,
             return_train_score=True,
             return_estimator=True
         )
@@ -449,14 +451,9 @@ def generate_results(model, input_data,
         train_scores = cv_scores['train_' + s]
         test_scores = cv_scores['test_' + s]
 
-        print("train_scores", train_scores)
-        print("test_scores", test_scores)
-
         # if abs(train_scores.mean()) is np.nan OR abs(test_scores.mean()) is np.nan
         if np.isnan(abs(train_scores.mean())) or np.isnan(abs(test_scores.mean())):
-            print("777-NaN")
-            print("train_scores", train_scores)
-            print("test_scores", test_scores)
+            print("train_scores.mean() or test_scores.mean() is nan")
 
         # remove _macro
         score_name = s.replace('_macro', '')
@@ -466,56 +463,56 @@ def generate_results(model, input_data,
             scores['test_score'] = abs(test_scores.mean())
             
             # Temporary fix to handle NaN values
-            if np.isnan(scores['train_score']):
-                scores['train_score'] = np.nanmean(train_scores)
-            if np.isnan(scores['test_score']):
-                scores['test_score'] = np.nanmean(test_scores)
+            # if np.isnan(scores['train_score']):
+            #     scores['train_score'] = np.nanmean(train_scores)
+            # if np.isnan(scores['test_score']):
+            #     scores['test_score'] = np.nanmean(test_scores)
         # for api will fix later
 
         if score_name == "balanced_accuracy":
             scores['accuracy_score'] = test_scores.mean()
             # Temporary fix to handle NaN values
-            if np.nanmean(test_scores)!=np.nan:
-                scores['accuracy_score'] = np.nanmean(test_scores)
-            else:
-                scores['accuracy_score'] = 0
+            # if np.nanmean(test_scores)!=np.nan:
+            #     scores['accuracy_score'] = np.nanmean(test_scores)
+            # else:
+            #     scores['accuracy_score'] = 0
         # for experiment tables
         if score_name == "balanced_accuracy" or score_name == "r2":
             scores['exp_table_score'] = test_scores.mean()
             # Temporary fix to handle NaN values
-            if np.nanmean(test_scores)!=np.nan:
-                scores['exp_table_score'] = np.nanmean(test_scores)
-            else:
-                scores['exp_table_score'] = 0
+            # if np.nanmean(test_scores)!=np.nan:
+            #     scores['exp_table_score'] = np.nanmean(test_scores)
+            # else:
+            #     scores['exp_table_score'] = 0
         if score_name in ["neg_mean_squared_error", "neg_mean_absolute_error"]:
             scores['train_{}_score'.format(score_name)] = abs(
                 train_scores.mean())
             # Temporary fix to handle NaN values
-            if np.nanmean(train_scores)!=np.nan:
-                scores['train_{}_score'.format(score_name)] = np.nanmean(
-                    train_scores)
-            else:
-                scores['train_{}_score'.format(score_name)] = 0
+            # if np.nanmean(train_scores)!=np.nan:
+            #     scores['train_{}_score'.format(score_name)] = np.nanmean(
+            #         train_scores)
+            # else:
+            #     scores['train_{}_score'.format(score_name)] = 0
             scores['{}_score'.format(score_name)] = abs(test_scores.mean())
             # Temporary fix to handle NaN values
-            if np.nanmean(test_scores)!=np.nan:
-                scores['{}_score'.format(score_name)] = np.nanmean(test_scores)
-            else:
-                scores['{}_score'.format(score_name)] = 0
+            # if np.nanmean(test_scores)!=np.nan:
+            #     scores['{}_score'.format(score_name)] = np.nanmean(test_scores)
+            # else:
+            #     scores['{}_score'.format(score_name)] = 0
         else:
             scores['train_{}_score'.format(score_name)] = train_scores.mean()
             # Temporary fix to handle NaN values
-            if np.nanmean(train_scores)!=np.nan:
-                scores['train_{}_score'.format(score_name)] = np.nanmean(
-                    train_scores)
-            else:
-                scores['train_{}_score'.format(score_name)] = 0
+            # if np.nanmean(train_scores)!=np.nan:
+            #     scores['train_{}_score'.format(score_name)] = np.nanmean(
+            #         train_scores)
+            # else:
+            #     scores['train_{}_score'.format(score_name)] = 0
             scores['{}_score'.format(score_name)] = test_scores.mean()
             # Temporary fix to handle NaN values
-            if np.nanmean(test_scores)!=np.nan:
-                scores['{}_score'.format(score_name)] = np.nanmean(test_scores)
-            else:
-                scores['{}_score'.format(score_name)] = 0
+            # if np.nanmean(test_scores)!=np.nan:
+            #     scores['{}_score'.format(score_name)] = np.nanmean(test_scores)
+            # else:
+            #     scores['{}_score'.format(score_name)] = 0
 
     # dump fitted module as pickle file
     export_model(tmpdir, _id, model, filename, target_name, mode, random_state)
@@ -588,7 +585,8 @@ def generate_results(model, input_data,
                               target,
                               model.classes_,
                               cv_scores,
-                              figure_export)
+                              figure_export,
+                              n_splits)
 
         plot_pca_2d(tmpdir, _id, features, target)
         # plot_pca_3d(tmpdir,_id,features,target)
@@ -625,7 +623,8 @@ def generate_results(model, input_data,
                 features,
                 target,
                 cv_scores,
-                figure_export)
+                figure_export,
+                n_splits)
 
     else:  # regression
         if figure_export:
@@ -760,7 +759,8 @@ def plot_confusion_matrix(
         y,
         class_names,
         cv_scores,
-        figure_export):
+        figure_export,
+        n_splits):
     """Make plot for confusion matrix.
 
     Parameters
@@ -779,14 +779,16 @@ def plot_confusion_matrix(
         Return from sklearn.model_selection.cross_validate
     figure_export: boolean
         If true, then export roc curve plot
+    n_splits: int
     Returns
     -------
     None
     """
     pred_y = np.empty(y.shape)
-    # cv = StratifiedKFold(n_splits=10)
-    # Temporary fix to handle NaN values
-    cv = StratifiedKFold(n_splits=8)
+    # Non temporary fix
+    cv = StratifiedKFold(n_splits=n_splits)
+    # Original
+    # cv = StratifiedKFold(cv)
     for cv_split, est in zip(cv.split(X, y), cv_scores['estimator']):
         train, test = cv_split
         pred_y[test] = est.predict(X[test])
@@ -1056,7 +1058,7 @@ def combine_summary_decision_curve(
 # from this function
 
 
-def plot_roc_curve(tmpdir, _id, X, y, cv_scores, figure_export):
+def plot_roc_curve(tmpdir, _id, X, y, cv_scores, figure_export,n_splits):
     """
     Plot ROC Curve.
     Parameters
@@ -1073,15 +1075,17 @@ def plot_roc_curve(tmpdir, _id, X, y, cv_scores, figure_export):
         Return from sklearn.model_selection.cross_validate
     figure_export: boolean
         If true, then export roc curve plot
+    n_splits: int
+
     Returns
     -------
     None
     """
     from scipy import interp
     from scipy.stats import sem, t
-    # cv = StratifiedKFold(n_splits=10)
+    cv = StratifiedKFold(n_splits=n_splits)
     # Temporary fix to handle NaN values
-    cv = StratifiedKFold(n_splits=8)
+    # cv = StratifiedKFold(cv)
     tprs = []
     aucs = []
     mean_fpr = np.linspace(0, 1, 100)
@@ -1104,8 +1108,8 @@ def plot_roc_curve(tmpdir, _id, X, y, cv_scores, figure_export):
     
         # Temporary fix to handle NaN values 
         # When the given data is extremely unbalanced, as illustrated by the example where classes_encoded consists solely of the class 0, both true positives (TP) and false negatives (FN) are zero. Consequently, the true positive rate (TPR) is calculated as TPR = TP / (TP + FN), which results in an undefined value (NaN) due to division by zero. In the specific scenario provided, where roc_curve([0,0,0], [0,0.9,0]) is called, it highlights a situation with no positive instances present in the true labels. For purposes of data visualization or further analysis where a numerical value is required, this NaN value is replaced with 0 to indicate the absence of true positives under these conditions.
-        fpr = np.nan_to_num(fpr)
-        tpr = np.nan_to_num(tpr)
+        # fpr = np.nan_to_num(fpr)
+        # tpr = np.nan_to_num(tpr)
 
         tprs.append(interp(mean_fpr, fpr, tpr))
 
