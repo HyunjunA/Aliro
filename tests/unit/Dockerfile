@@ -14,10 +14,17 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
       i386) ARCH='x86';; \
       *) echo "unsupported architecture"; exit 1 ;; \
     esac \
-    && wget --quiet https://nodejs.org/dist/v12.22.9/node-v12.22.9-linux-$ARCH.tar.xz -O ~/node.tar.xz && \
+    # && wget --quiet https://nodejs.org/dist/v12.22.9/node-v12.22.9-linux-$ARCH.tar.xz -O ~/node.tar.xz && \
+    # && NODE_VERSION=12.22.9 \
+    # && NODE_VERSION=14.13.1 \
+    && NODE_VERSION=14.21.3 \
+    # && NODE_VERSION=16.20.1 \
+    && wget --quiet "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" -O ~/node.tar.xz && \
     tar -xvf ~/node.tar.xz -C /usr/local/ --strip-components=1 --no-same-owner && \
     rm ~/node.tar.xz && \
-    ln -s /usr/local/bin/node /usr/local/bin/nodejs
+    ln -s /usr/local/bin/node /usr/local/bin/nodejs \
+    && echo "Node.js version:" && node -v \
+    && echo "npm version:" && npm -v
 
 # RUN wget --quiet https://nodejs.org/dist/v12.22.9/node-v12.22.9-linux-x64.tar.xz -O ~/node.tar.xz && \
 #     tar -xvf ~/node.tar.xz -C /opt/ && \
