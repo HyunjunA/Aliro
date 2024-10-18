@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="7" failures="0" errors="0" time="11.603">
+  <testsuite name="testing how some UI action affects redux action stuff" errors="0" failures="0" skipped="0" timestamp="2024-10-18T17:56:30" time="3.898" tests="7">
+    <testcase classname="testing how some UI action affects redux action stuff updateAI" name="testing how some UI action affects redux action stuff updateAI" time="0.004">
+    </testcase>
+    <testcase classname="testing how some UI action affects redux action stuff updateDataset" name="testing how some UI action affects redux action stuff updateDataset" time="0">
+    </testcase>
+    <testcase classname="testing how some UI action affects redux action stuff addDataset" name="testing how some UI action affects redux action stuff addDataset" time="0.001">
+    </testcase>
+    <testcase classname="testing mock api calls in redux action reducer toggleAI, expect success" name="testing mock api calls in redux action reducer toggleAI, expect success" time="0.001">
+    </testcase>
+    <testcase classname="testing mock api calls in redux action reducer toggleAI, expect failure" name="testing mock api calls in redux action reducer toggleAI, expect failure" time="0">
+    </testcase>
+    <testcase classname="testing mock api calls in redux action reducer uploadDataset, expect success" name="testing mock api calls in redux action reducer uploadDataset, expect success" time="0.001">
+    </testcase>
+    <testcase classname="testing mock api calls in redux action reducer uploadDataset, expect failure" name="testing mock api calls in redux action reducer uploadDataset, expect failure" time="0.001">
+    </testcase>
+  </testsuite>
+</testsuites>
