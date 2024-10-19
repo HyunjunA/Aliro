@@ -4,6 +4,8 @@ ARG USE_WHEELS
 ARG wheel_directory=docker/wheels
 
 #nodejs
+ARG NODE_VERSION=14.21.3
+
 RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
     && case "${dpkgArch##*-}" in \
       amd64) ARCH='x64';; \
@@ -14,7 +16,7 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
       i386) ARCH='x86';; \
       *) echo "unsupported architecture"; exit 1 ;; \
     esac \
-    && wget --quiet https://nodejs.org/dist/v12.22.9/node-v12.22.9-linux-$ARCH.tar.xz -O ~/node.tar.xz && \
+    && wget --quiet https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-$ARCH.tar.xz -O ~/node.tar.xz && \
     tar -xvf ~/node.tar.xz -C /usr/local/ --strip-components=1 --no-same-owner && \
     rm ~/node.tar.xz && \
     ln -s /usr/local/bin/node /usr/local/bin/nodejs
