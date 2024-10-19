@@ -11,9 +11,7 @@
     "type": "git",
     "url": "https://github.com/EpistasisLab/Aliro.git"
   },
-  "keywords": [
-    "machine learning"
-  ],
+  "keywords": ["machine learning"],
   "author": "University of Pennsylvania",
   "license": "GPL 3.0",
   "bugs": {
@@ -70,22 +68,19 @@
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12",
     "webpack-merge": "^4.2.2",
+
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.20",
     "tailwindcss": "^3.2.6"
   },
   "jest": {
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ],
+    "snapshotSerializers": ["enzyme-to-json/serializer"],
     "transform": {
       "^.+\\.jsx?$": "babel-jest",
       "^.+\\.js?$": "babel-jest",
       "^.+\\.ts?$": "babel-jest"
     },
-    "transformIgnorePatterns": [
-      "node_modules/(?!(fetch-mock)/)"
-    ],
+    "transformIgnorePatterns": ["node_modules/(?!(fetch-mock)/)"],
     "reporters": [
       "default",
       [
