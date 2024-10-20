@@ -14,22 +14,10 @@ exports[`basic testing of FileUploadOrigin react component DONE - full component
     >
       <Dropzone
         accept=".csv,.tsv,text/csv,text/tsv"
-        disabled={false}
-        getFilesFromEvent={[Function]}
         id="file-dropzone"
-        maxFiles={0}
-        maxSize={Infinity}
-        minSize={0}
         multiple={false}
-        noClick={false}
-        noDrag={false}
-        noDragEventsBubbling={false}
-        noKeyboard={false}
         onDropAccepted={[Function]}
         onDropRejected={[Function]}
-        preventDropOnDocument={true}
-        useFsAccessApi={false}
-        validator={null}
       >
         <Component />
       </Dropzone>

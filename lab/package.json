@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@types/node": "^10.17.21",
+    "assert": "^2.1.0",
     "jest": "^26.0.1",
     "jest-html-reporter": "^2.8.2",
     "jest-junit": "^10.0.0",

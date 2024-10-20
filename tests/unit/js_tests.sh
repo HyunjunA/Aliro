@@ -54,44 +54,30 @@ echo "JEST_JUNIT_OUTPUT_DIR" $JEST_JUNIT_OUTPUT_DIR
 # Set Node.js options
 export NODE_OPTIONS="--experimental-modules --no-warnings"
 
-# echo "Installing necessary packages..."
-# npm install --no-save @babel/core @babel/node @babel/preset-env @babel/preset-react
+# Function to find node:stream module
+find_node_modules() {
+    echo "Searching for node:stream and node:assert modules..."
+    node -e "
+    const path = require('path');
+    const modules = ['stream', 'assert'];
+    
+    modules.forEach(moduleName => {
+        try {
+            const modulePath = require.resolve(moduleName);
+            const absolutePath = path.resolve(modulePath);
+            console.log('node:' + moduleName + ' module found at: ' + absolutePath);
+        } catch(e) {
+            console.error('node:' + moduleName + ' module not found');
+        }
+    });
 
-# Install Enzyme and React 16 adapter
-# npm install --save-dev enzyme enzyme-adapter-react-16
+    // 추가적으로 Node.js의 내장 모듈 경로 출력
+    console.log('Node.js built-in modules directory:', path.dirname(process.execPath) + '/lib');
+    "
+}
 
-# Install Jest
-
-# # Uninstall current Jest version
-# npm uninstall jest
-
-# # Install Jest version 26.6.3 (a stable version that's not too old)
-# npm install --save-dev jest@26.6.3
-
-# # Install related packages at compatible versions
-# npm install --save-dev @types/jest@26.0.24
-# npm install --save-dev babel-jest@26.6.3
-# npm install --save-dev ts-jest@26.5.6
-
-# # If you're using enzyme, install a compatible version
-# npm install --save-dev enzyme@3.11.0
-# npm install --save-dev enzyme-adapter-react-16@1.15.6
-
-# # Update package.json to use the installed Jest version
-# npm pkg set scripts.test="jest"
-
-# # Optional: Clear npm cache and node_modules
-# # Uncomment these lines if you're still having issues
-# # npm cache clean --force
-# # rm -rf node_modules
-# # npm install
-
-# echo "Jest 26.6.3 and compatible packages have been installed."
-
-# # Check Jest version
-# echo "Installed Jest version:"
-# npx jest --version
-
+# 함수 실행
+find_node_modules
 
 
 echo "starting '/lab' jest reports"
@@ -103,6 +89,7 @@ echo "==== labres unit tests result "$labres
 echo "starting '/lab/webapp' jest reports"
 cd "/appsrc/lab/webapp/"
 npm run test
+# npm test -- -u
 webappres=$?
 echo "==== webappres unit tests result "$webappres
 

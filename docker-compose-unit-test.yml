@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   unit_tester:
@@ -6,10 +6,17 @@ services:
       context: .
       dockerfile: tests/unit/Dockerfile
       args:
-        # - USE_WHEELS=${USE_WHEELS}
         - USE_WHEELS=0
     working_dir: /appsrc
-    command: bash -c "dos2unix tests/unit/unit_test_runner.sh && export PENNAI_UNIT_TESTS_JS_ONLY=$PENNAI_UNIT_TESTS_JS_ONLY && export PENNAI_UNIT_TESTS_PY_ONLY=$PENNAI_UNIT_TESTS_PY_ONLY && sh tests/unit/unit_test_runner.sh"
+    command: >
+      bash -c "
+      dos2unix tests/unit/unit_test_runner.sh &&
+      export PENNAI_UNIT_TESTS_JS_ONLY=$PENNAI_UNIT_TESTS_JS_ONLY &&
+      export PENNAI_UNIT_TESTS_PY_ONLY=$PENNAI_UNIT_TESTS_PY_ONLY &&
+      sh tests/unit/unit_test_runner.sh;
+      echo 'Tests completed. Keeping container alive...';
+      tail -f /dev/null
+      "
     tty: true
     stdin_open: true
     volumes:
@@ -17,5 +24,3 @@ services:
       - "/appsrc/lab/webapp/node_modules"
       - "/appsrc/lab/node_modules"
       - "/appsrc/machine/node_modules"
-
-
